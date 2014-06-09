@@ -4,32 +4,28 @@ open FsUnit
 open NUnit.Framework
 open impl
 
-[<Test>]
-let ``AAAA,++++ -> no new guess`` () =
-    makeGuess 
-        ["AAAA","++++"]
-    |> should equal ""
+[<SetUp>]
+let setup () =
+    initializeGuesses ()
 
 [<Test>]
-let ``AAAA,+++ -> new guess is AAAB`` () =
-    makeGuess 
-        ["AAAA","+++"]
-    |> should equal "AAAB"
+let ``"" witn "" should guess AAAA`` () =
+    getNextGuess "" "" |> should equal "AAAA"
 
 [<Test>]
-let ``["AAAA","+++";"AAAB","+++"] -> new guess is AAAC`` () =
-    makeGuess 
-        ["AAAA","+++";
-         "AAAB","+++"]
-    |> should equal "AAAC"
+let ``AAAA witn "" should guess BBBB`` () =
+    getNextGuess "AAAA" "" |> should equal "BBBB"
 
 [<Test>]
-let ``["AAAA","+++"..."AAAF","+++"] -> no new guess`` () =
-    makeGuess 
-        ["AAAA","+++";
-         "AAAB","+++";
-         "AAAC","+++";
-         "AAAD","+++";
-         "AAAE","+++";
-         "AAAF","+++";]
-    |> should equal ""
+let ``BBBB witn "" should guess AAAA`` () =
+    getNextGuess "BBBB" "" |> should equal "AAAA"
+
+[<Test>]
+let ``AAAA and BBBB witn "" should guess CCCC`` () =
+    getNextGuess "AAAA" "" |> ignore
+    getNextGuess "BBBB" "" |> should equal "CCCC"
+
+[<Test>]
+let ``AAAA witn "-" should guess ABBB`` () =
+    getNextGuess "AAAA" "-" |> should equal "ABBB"
+
