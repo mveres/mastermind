@@ -26,6 +26,45 @@ let ``AAAA and BBBB witn "" should guess CCCC`` () =
     getNextGuess "BBBB" "" |> should equal "CCCC"
 
 [<Test>]
-let ``AAAA witn "-" should guess ABBB`` () =
-    getNextGuess "AAAA" "-" |> should equal "ABBB"
+let ``AAAB witn "-" should guess BBBC`` () =
+    getNextGuess "AAAB" "-" |> should equal "BBBC"
 
+[<Test>]
+let ``AAAB witn "--" should guess BBBA`` () =
+    getNextGuess "AAAB" "--" |> should equal "BBBA"
+
+[<Test>]
+let ``AABB witn "---" should guess BBAC`` () =
+    getNextGuess "AABB" "---" |> should equal "BBAC"
+
+[<Test>]
+let ``AABB witn "----" should guess BBAA`` () =
+    getNextGuess "AABB" "----" |> should equal "BBAA"
+
+[<Test>]
+let ``AAAA witn "+" should guess ABBB`` () =
+    getNextGuess "AAAA" "+" |> should equal "ABBB"
+
+[<Test>]
+let ``ABCD witn "++" should guess AAAD`` () =
+    getNextGuess "ABCD" "++" |> should equal "AAAD"
+
+[<Test>]
+let ``ABCD witn "+++" should guess AACD`` () =
+    getNextGuess "ABCD" "+++" |> should equal "AACD"
+
+[<Test>]
+let ``ABCD witn "++++" should guess ABCD`` () =
+    getNextGuess "ABCD" "++++" |> should equal "ABCD"
+
+[<Test>]
+let ``ABCD witn "-+" should guess AAAB`` () =
+    getNextGuess "ABCD" "-+" |> should equal "AAAB"
+
+[<Test>]
+let ``ABCD witn "---+" should guess ACDB`` () =
+    getNextGuess "ABCD" "---+" |> should equal "ACDB"
+
+[<Test>]
+let ``ABCD witn "--++" should guess ABDC`` () =
+    getNextGuess "ABCD" "--++" |> should equal "ABDC"

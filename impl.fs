@@ -1,6 +1,16 @@
 ﻿module impl
 
 open System.Collections.Generic
+open System
+
+type Feedback (feedbackStr) =
+    let feedback =
+        let count chr = feedbackStr |> Seq.filter ((=) chr) |> Seq.length
+        (count '-'),(count '+')
+
+    member this.OffPosition = fst feedback
+    member this.OnPosition = snd feedback
+
 
 let guesses:List<string> = new List<string> ()
 
@@ -14,31 +24,29 @@ let initializeGuesses () =
                     guesses.Add(m1+m2+m3+m4)
 
 
-let isGuessPossible feedback previousGuess guess =
-    
-    //let intersectionCount = Set.intersect (Set.ofSeq previousGuess) (Set.ofSeq guess) |> Set.count
+let isGuessPossible (feedback:Feedback) prevGuess guess =
 
-    let rec intersection (prevGuessArray: char array, guessSeq: char list):char list =
+    let rec intersect (prevGuessArray: char array, guessList: char list):char list =
         
-        match guessSeq with
+        match guessList with
         | [] -> []
         | hg :: tg -> let idx = Array.tryFindIndex ((=) hg) prevGuessArray
                       match idx with
                       |Some i -> 
                               prevGuessArray.[i] <- '_'
-                              hg :: (intersection (prevGuessArray,tg))
-                      |None -> intersection (prevGuessArray,tg)
+                              hg :: (intersect (prevGuessArray,tg))
+                      |None -> intersect (prevGuessArray,tg)
         
-    let inter = (intersection ((Array.ofSeq previousGuess),(List.ofSeq guess)))
+    let generalIntersectionCount = (intersect ((Array.ofSeq prevGuess),(List.ofSeq guess))) 
+                                   |> List.length
 
-    let intersectionCount = List.length inter
+    let onPosition = (prevGuess, guess) ||> Seq.map2 (=) |> Seq.filter id |> Seq.length
 
-    if intersectionCount = 4 then false
-    else
-        match feedback with
-        |"" -> intersectionCount = 0
-        |"-" -> intersectionCount = 1
-        |_ -> intersectionCount < 4
+    let offPosition = generalIntersectionCount - onPosition
+
+    feedback.OffPosition = offPosition
+    && feedback.OnPosition = onPosition
+
 
 let filterPossibleGuesses feedback previousGuess =
     let possibleGuesses =
@@ -50,8 +58,9 @@ let filterPossibleGuesses feedback previousGuess =
     guesses.AddRange(possibleGuesses)
     guesses
 
-let getNextGuess previousGuess feedback =
-    filterPossibleGuesses feedback previousGuess
+
+let getNextGuess previousGuess feedbackStr =
+    filterPossibleGuesses (Feedback feedbackStr) previousGuess
     |> Seq.head
         
 
