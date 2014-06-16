@@ -59,7 +59,7 @@ let filterPossibleGuesses feedback previousGuess =
     guesses
 
 
-let getNextGuess previousGuess feedbackStr =
+let makeNextGuess previousGuess feedbackStr =
     filterPossibleGuesses (Feedback feedbackStr) previousGuess
     |> Seq.head
         
